@@ -9,7 +9,7 @@ const passportConfig = {
   audience: "platform_api",
   baseConfig: new config.ImmutableConfiguration({
     environment: config.Environment.SANDBOX, 
-    apiKey: "", // this can be empty
+    apiKey: "", 
   })
 };
 const passportInstance = new passport.Passport(passportConfig);
@@ -28,6 +28,35 @@ const fetchAuth = async () => {
     window.location.reload();
   }
 };
+
+async function getWalletInfo() {
+  try {
+    // Request the wallet address from the connected account
+    const accounts = await passportProvider.request({ method: "eth_requestAccounts" });
+    const walletAddress = accounts[0];
+
+    // Create an instance of ethers.js to interact with the Ethereum blockchain
+    const provider = new ethers.providers.Web3Provider(passportProvider);
+
+    // Request the token balance
+    const balance = await passportProvider.request({
+      method: 'eth_getBalance',
+      params: [walletAddress, 'latest']
+    });
+    const balanceInEther = ethers.utils.formatEther(balance);
+
+    return {
+      walletAddress,
+      balanceInEther,
+    };
+  } catch (error) {
+    console.error("Error getting wallet info:", error);
+    return {
+      walletAddress: null,
+      balanceInEther: null,
+    };
+  }
+}
 
 async function initiateTransaction() {
   try {
@@ -59,4 +88,4 @@ async function initiateTransaction() {
   }
 }
 
-export { passportInstance, passportProvider, fetchAuth, initiateTransaction };
+export { passportInstance, passportProvider, fetchAuth, initiateTransaction, getWalletInfo };

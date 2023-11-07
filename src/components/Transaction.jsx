@@ -27,7 +27,7 @@ export default function Transaction() {
   return (
     <>
       <button onClick={handleTransaction}>
-        {loading ? "Loading..." : "🚀 Initiate a Sample Transaction 🚀"}
+        {loading ? "Loading..." : "🚀 Initiate a Test Transaction 🚀"}
       </button>
       {transactionHash && <p>Transaction Hash: <br/>
         <a 

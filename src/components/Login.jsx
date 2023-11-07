@@ -16,7 +16,7 @@ function Login() {
   return (
     <>
       <div className="card">
-        <h1>Immutable Passport Sample</h1>
+        <h1>Immutable Passport Sample App</h1>
         <button 
           disabled={loading}
           onClick={async () => {
@@ -28,7 +28,7 @@ function Login() {
             <span/>
             <span/>
             <span/>
-          {loading ? "Loading..." : "Login"}
+          {loading ? "Loading..." : "Log in with Passport"}
         </button>
       </div>
     </>

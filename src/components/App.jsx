@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router';
-import { passportInstance } from "../immutable";
+import { passportInstance, getWalletInfo } from "../immutable";
 import "./App.css"
+import UserInfo from './UserInfo';
+import TokenInfo from './TokenInfo';
+import WalletInfo from './WalletInfo';
 import Transaction from './Transaction';
 
 export default function App () {
   const [user, setUser] = useState(undefined);
+  const [walletAddress, setWalletAddress] = useState('');
+const [walletBalance, setWalletBalance] = useState('');
   const navigate = useNavigate()
 
   const fetchUser = async () => {
@@ -32,33 +37,39 @@ export default function App () {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      const fetchWalletInfo = async () => {
+        const info = await getWalletInfo();
+        setWalletAddress(info.walletAddress);
+        setWalletBalance(info.balanceInEther);
+      };
+
+      fetchWalletInfo();
+    }
+  }, [user]);
+
   return(
     <div className='card'>
       <div className='hi-header'>
-        <h1>Hello {user?.nickname ?? 'there'} 👋 </h1>
+        <h1>Hello {user?.Nickname ?? 'there'} 👋 </h1>
         <a onClick={() => {
-          passportInstance.logout()
-          navigate("/")
+          passportInstance.logout();
+          navigate("/");
         }}>Logout</a> 
       </div>
-      {
-        Boolean(user) && Object.keys(user).map((key, i) => 
-          <div className="text-box-wrapper" key={i}>
-            <div className="text-box disable">
-              <input type="text" defaultValue={user[key] ?? ''} placeholder="No nickname set"/>
-              <label>{key}</label>
-            </div>
-            {Boolean(key === "accessToken" || key === "idToken") && 
-              <a onClick={() => {
-                const txt = user[key] ?? ''
-                navigator.clipboard.writeText(txt)
-                console.log(txt)
-              }}>Copy</a>
-            }
-          </div>
-        )
-      }
+      {user && (
+        <>
+          <UserInfo label="Nickname" value={user.Nickname} />
+          <UserInfo label="Email" value={user.Email} />
+          <UserInfo label="Sub" value={user.sub} />
+          <WalletInfo address={walletAddress} balance={walletBalance} />
+          <TokenInfo label="Access Token" value={user.accessToken} />
+          <TokenInfo label="ID Token" value={user.idToken} />
+
+        </>
+      )}
       <Transaction/>
     </div>
-   )
+  );
 }
