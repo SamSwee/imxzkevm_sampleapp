@@ -81,4 +81,5 @@ h1{
   background: transparent;
   resize: vertical; /* Prevents the user from resizing the textarea */
   overflow-y: auto; /* Allows for scrolling within the textarea */
+  pointer-events: auto;
 }
