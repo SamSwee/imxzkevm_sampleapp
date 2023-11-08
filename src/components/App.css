@@ -79,6 +79,6 @@ h1{
   border-bottom: 1px solid #fff;
   outline: none;
   background: transparent;
-  resize: none; /* Prevents the user from resizing the textarea */
+  resize: vertical; /* Prevents the user from resizing the textarea */
   overflow-y: auto; /* Allows for scrolling within the textarea */
 }

@@ -6,6 +6,7 @@ import UserInfo from './UserInfo';
 import TokenInfo from './TokenInfo';
 import WalletInfo from './WalletInfo';
 import Transaction from './Transaction';
+import { validateJWT } from './Validation';
 
 export default function App () {
   const [user, setUser] = useState(undefined);
@@ -20,13 +21,14 @@ const [walletBalance, setWalletBalance] = useState('');
       const idToken = await passportInstance.getIdToken();
 
       Boolean(userProfile === undefined) && navigate("/")
-
+      const idTokenPayload = await validateJWT(idToken);
       setUser({
         Nickname: userProfile?.nickname,
         Email: userProfile?.email,
         accessToken: accessToken,
         idToken: idToken,
         sub: userProfile?.sub,
+        idTokenPayload: idTokenPayload,
       });
     } catch (error) {
       console.log(error);
@@ -66,6 +68,7 @@ const [walletBalance, setWalletBalance] = useState('');
           <WalletInfo address={walletAddress} balance={walletBalance} />
           <TokenInfo label="Access Token" value={user.accessToken} />
           <TokenInfo label="ID Token" value={user.idToken} />
+          <TokenInfo label="Token Payload" value={JSON.stringify(user.idTokenPayload, null, 2)} />
 
         </>
       )}
